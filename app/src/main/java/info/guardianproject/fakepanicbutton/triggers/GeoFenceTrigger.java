@@ -17,6 +17,6 @@ public class GeoFenceTrigger extends BaseTrigger {
 
         //setup geofence
 
-        launchIntent("email@","phone","geoalert","word");
+        //if
     }
 }
