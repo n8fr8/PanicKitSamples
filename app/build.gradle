@@ -1,0 +1,29 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "24.0.1"
+
+    defaultConfig {
+        applicationId "info.guardianproject.fakepanicbutton"
+        minSdkVersion 14
+        targetSdkVersion 23
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'info.guardianproject.panic:panic:0.5'
+
+    //for shake detection
+    compile 'com.squareup:seismic:1.0.2'
+
+
+
+}

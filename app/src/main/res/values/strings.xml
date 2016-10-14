@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FakePanicButton</string>
+    <string name="action_settings">Settings</string>
+    <string name="panic">PANIC!</string>
+    <string name="panic_message_hint">I\'m in trouble!</string>
+    <string name="choose_contact">Choose contact…</string>
+
+</resources>
