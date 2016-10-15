@@ -51,6 +51,24 @@
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
+
+        <!-- for intercepting headset or bluetooth button pushes -->
+        <receiver android:name=".triggers.MediaButtonTrigger$MediaButtonIntentReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- for detecting network state changes, to look for specific wifi networks -->
+        <receiver android:name=".triggers.WifiTrigger$NetworkStatusReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.NETWORK_STATE_CHANGED_ACTION"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- the GeoTrigger service launched when the geofence area is triggered -->
+        <service android:name=".triggers.GeoTrigger$GeofenceIntentService"/>
+
     </application>
 
 </manifest>
