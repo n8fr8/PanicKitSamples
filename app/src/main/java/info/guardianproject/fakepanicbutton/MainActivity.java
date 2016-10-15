@@ -26,6 +26,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import info.guardianproject.fakepanicbutton.triggers.BaseTrigger;
+import info.guardianproject.fakepanicbutton.triggers.GeoTrigger;
+import info.guardianproject.fakepanicbutton.triggers.MediaButtonTrigger;
+import info.guardianproject.fakepanicbutton.triggers.PhoneNumberTrigger;
+import info.guardianproject.fakepanicbutton.triggers.SuperShakeTrigger;
+import info.guardianproject.fakepanicbutton.triggers.WifiTrigger;
 import info.guardianproject.panic.Panic;
 import info.guardianproject.panic.PanicTrigger;
 
@@ -49,6 +55,8 @@ public class MainActivity extends ListActivity {
     private String displayName;
     private String phoneNumber;
     private String emailAddress;
+
+    private BaseTrigger[] triggers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +85,15 @@ public class MainActivity extends ListActivity {
                 startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
             }
         });
+
+        triggers = new BaseTrigger[5];
+        triggers[0] = new SuperShakeTrigger(this);
+        triggers[1] = new MediaButtonTrigger(this);
+        triggers[2] = new PhoneNumberTrigger(this);
+        triggers[3] = new WifiTrigger(this);
+        triggers[4] = new GeoTrigger(this);
+
+
     }
 
     @Override
@@ -227,6 +244,9 @@ public class MainActivity extends ListActivity {
                     displayName = cursor.getString(cursor.getColumnIndex(Phone.DISPLAY_NAME));
                     phoneNumber = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
                     contactTextView.setText(displayName + "/" + phoneNumber);
+
+                    setTriggerData();
+
                 }
                 break;
             case CONNECT_RESULT:
@@ -239,6 +259,19 @@ public class MainActivity extends ListActivity {
                     PanicTrigger.removeConnectedResponder(this, requestPackageName);
                 }
                 break;
+        }
+    }
+
+    private void setTriggerData ()
+    {
+        for (BaseTrigger trigger: triggers)
+        {
+
+            trigger.setEmailAddress(emailAddress);
+            trigger.setPhoneNumber(phoneNumber);
+            trigger.setSubject("panic message");
+            trigger.setPanicMessage(panicMessageEditText.getText().toString());
+
         }
     }
 }

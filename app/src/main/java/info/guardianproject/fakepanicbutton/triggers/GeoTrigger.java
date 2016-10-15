@@ -5,9 +5,9 @@ import android.app.Activity;
 /**
  * Created by n8fr8 on 10/14/16.
  */
-public class GeoFenceTrigger extends BaseTrigger {
+public class GeoTrigger extends BaseTrigger {
 
-    public GeoFenceTrigger(Activity context)
+    public GeoTrigger(Activity context)
     {
         super (context);
     }
