@@ -1,6 +1,7 @@
 
 package info.guardianproject.fakepanicbutton;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -12,6 +13,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -58,6 +61,8 @@ public class MainActivity extends ListActivity {
 
     private BaseTrigger[] triggers;
 
+    private final static int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 8888;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +86,8 @@ public class MainActivity extends ListActivity {
 
             @Override
             public void onClick(View v) {
-                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);
-                startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+                pickContacts ();
+
             }
         });
 
@@ -94,6 +99,41 @@ public class MainActivity extends ListActivity {
         triggers[4] = new GeoTrigger(this);
 
 
+    }
+
+    private void pickContacts ()
+    {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+        else
+        {
+            Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);
+            startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+        }
     }
 
     @Override
@@ -259,6 +299,55 @@ public class MainActivity extends ListActivity {
                     PanicTrigger.removeConnectedResponder(this, requestPackageName);
                 }
                 break;
+        }
+    }
+
+    //for some triggers we have to request permissions!
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case GeoTrigger.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    for (BaseTrigger trigger: triggers) {
+
+                        //now setup the trigger again, with permissions this time
+                        if (trigger instanceof GeoTrigger)
+                            ((GeoTrigger)trigger).activateTrigger();
+
+                    }
+
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                   pickContacts();
+
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
