@@ -27,7 +27,7 @@ public class SuperShakeTrigger extends BaseTrigger {
             public void hearShake() {
 
                 //you shook me!
-                launchPanicIntent();
+                launchPanicIntent(getContext());
 
             }
         });

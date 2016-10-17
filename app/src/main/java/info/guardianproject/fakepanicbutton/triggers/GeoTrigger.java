@@ -133,7 +133,7 @@ public class GeoTrigger extends BaseTrigger {
         public int onStartCommand(Intent intent, int flags, int startId) {
 
             //geofence triggered
-            launchPanicIntent();
+            launchPanicIntent(getContext());
 
             return super.onStartCommand(intent, flags, startId);
         }

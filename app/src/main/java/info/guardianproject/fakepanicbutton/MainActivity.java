@@ -5,12 +5,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
 import android.support.v4.app.ActivityCompat;
@@ -57,7 +59,7 @@ public class MainActivity extends ListActivity {
 
     private String displayName;
     private String phoneNumber;
-    private String emailAddress;
+    private String emailAddress = "test@test.foo";
 
     private BaseTrigger[] triggers;
 
@@ -353,14 +355,16 @@ public class MainActivity extends ListActivity {
 
     private void setTriggerData ()
     {
-        for (BaseTrigger trigger: triggers)
-        {
 
-            trigger.setEmailAddress(emailAddress);
-            trigger.setPhoneNumber(phoneNumber);
-            trigger.setSubject("panic message");
-            trigger.setPanicMessage(panicMessageEditText.getText().toString());
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        }
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putString("email",emailAddress);
+        edit.putString("phone",phoneNumber);
+        edit.putString("subject","panic message");
+        edit.putString("message",panicMessageEditText.getText().toString());
+
+        edit.commit();
+
     }
 }

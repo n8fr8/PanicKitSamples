@@ -3,8 +3,10 @@ package info.guardianproject.fakepanicbutton.triggers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import org.w3c.dom.Text;
@@ -23,11 +25,6 @@ public abstract class BaseTrigger {
 
     private Activity mContext;
 
-    private String mEmailAddress;
-    private String mPhoneNumber;
-    private String mSubject;
-    private String mPanicMessage;
-
     public BaseTrigger (Activity context)
     {
         mContext = context;
@@ -37,15 +34,22 @@ public abstract class BaseTrigger {
 
     public abstract void activateTrigger();
 
-    public void launchPanicIntent ()
+    public static void launchPanicIntent (Context context)
     {
-        launchIntent(getEmailAddress(),getPhoneNumber(),getSubject(),getPanicMessage());
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+
+        String email = prefs.getString("email",null);
+        String phone = prefs.getString("phone",null);
+        String subject = prefs.getString("subject","panic message");
+        String message = prefs.getString("message","i triggered a panic!");
+
+        launchIntent(context, email, phone, subject, message);
     }
 
-    public void launchIntent (String emailAddress, String phoneNumber, String subject, String message)
+    public static void launchIntent (Context context, String emailAddress, String phoneNumber, String subject, String message)
     {
-        final PackageManager pm = mContext.getPackageManager();
-        final Set<String> receiverPackageNames = PanicTrigger.getResponderActivities(mContext);
+        final PackageManager pm = context.getPackageManager();
+        final Set<String> receiverPackageNames = PanicTrigger.getResponderActivities(context);
 
         Intent intent = new Intent(Panic.ACTION_TRIGGER);
 
@@ -75,9 +79,9 @@ public abstract class BaseTrigger {
         for (String packageName : receiverPackageNames) {
             intent.setPackage(packageName);
             if (activities.contains(packageName)) {
-                mContext.startActivityForResult(intent, 0);
+                context.startActivity(intent);//can't do start activity unless context is an activity
             } else if (services.contains(packageName)) {
-                mContext.startService(intent);
+                context.startService(intent);
             }
         }
     }
@@ -88,35 +92,5 @@ public abstract class BaseTrigger {
         return mContext;
     }
 
-    public String getEmailAddress() {
-        return mEmailAddress;
-    }
 
-    public void setEmailAddress(String mEmailAddress) {
-        this.mEmailAddress = mEmailAddress;
-    }
-
-    public String getPhoneNumber() {
-        return mPhoneNumber;
-    }
-
-    public void setPhoneNumber(String mPhoneNumber) {
-        this.mPhoneNumber = mPhoneNumber;
-    }
-
-    public String getSubject() {
-        return mSubject;
-    }
-
-    public void setSubject(String mSubject) {
-        this.mSubject = mSubject;
-    }
-
-    public String getPanicMessage() {
-        return mPanicMessage;
-    }
-
-    public void setPanicMessage(String mPanicMessage) {
-        this.mPanicMessage = mPanicMessage;
-    }
 }

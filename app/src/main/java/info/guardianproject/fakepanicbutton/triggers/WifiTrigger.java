@@ -51,7 +51,7 @@ public class WifiTrigger extends BaseTrigger {
                 if (!TextUtils.isEmpty(ssid)
                     && ssid.equals(WIFI_SSID_TRIGGER))
                 {
-                    launchPanicIntent();
+                    launchPanicIntent(getContext());
                 }
             }
 

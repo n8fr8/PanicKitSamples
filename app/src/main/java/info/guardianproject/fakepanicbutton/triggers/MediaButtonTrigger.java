@@ -31,6 +31,7 @@ public class MediaButtonTrigger extends BaseTrigger {
         MediaButtonIntentReceiver r = new MediaButtonIntentReceiver();
         getContext().registerReceiver(r, filter);
 
+
     }
 
     public class MediaButtonIntentReceiver extends BroadcastReceiver {
@@ -61,7 +62,7 @@ public class MediaButtonTrigger extends BaseTrigger {
                 mLastTriggerTime = triggerTime;
 
                 if (mTriggerCount > TRIGGER_THRESHOLD) {
-                    launchPanicIntent();
+                    launchPanicIntent(context);
                     mTriggerCount = 0;
                 }
 
