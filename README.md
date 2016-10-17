@@ -18,7 +18,7 @@ This project demonstrates new possible triggers that could be implemented in an 
 
 In the "info.guardianproject.fakepanicbutton.triggers" package, you will find the following classes:
 
-* BaseTrigger: a base class that handles launching of the "panic intent" from a set of stored preferences to trigger the receivers
+* BaseTrigger: a base class that handles launching of the "panic intent" from a set of stored preferences to trigger the responders
 * GeoTrigger: Using the awesome "LOST" open-source geofencing library, this trigger sends a panic if the device moves outside of a pre-defined area (in this sample, it is Times Square NYC)
 * MediaButtonTrigger: This trigger will notice multiple rapid pushes of a headset mic button or a bluetooth mic call button, and send a trigger.
 * PhoneNumberTrigger (OutgoingCallReceiver): This trigger monitors phone calls, looking for a pre-defined fake "panic number".
